@@ -7,7 +7,7 @@ app.set('port', 4040)
 console.log('Server listening on port', app.get('port'))
 app.listen(app.get('port'))
 
-
+var nom_index = "sites_archeo";
 
 // INFO IMPORTANTE
 // Pour importer le fichier france2.csv dans kibana, il faut aller sur http://localhost:5601/app/ml/filedatavisualizer (Machine Learning / File Upload)
@@ -19,13 +19,16 @@ app.get('/', function (req, res) {
     res.send('Hello world !')
 })
 
-// affiche tous les sites archéologiques
-app.get('/all', async function (req, res) {
+// ***************************************
 
+// affiche tous les sites archéologiques
+
+app.get('/all', async function (req, res) {
+// console.log("toto");
     async function Search() {
 
         const result = await client.search({
-            index: 'archeo',
+            index: nom_index,
             query: {
                 match_all: {}
             }
@@ -40,14 +43,17 @@ app.get('/all', async function (req, res) {
     res.send(SearchResult)
 })
 
+// ***************************************
+
 // Affiche un site par son id
+
 app.get('/site/:id', async function (req, res) {
     var IdValue = req.params.id
 
     async function Search() {
 
         const result = await client.search({
-            index: 'archeo',
+            index: nom_index,
             query: {
                 match: {
                     id: "" + IdValue + ""
@@ -63,6 +69,39 @@ app.get('/site/:id', async function (req, res) {
     // Envoie le résultat de la recherche
     res.send(SearchResult)
 })
+
+
+// ***************************************
+
+
+// Recherche si id existe
+// Si id n'existe pas return false
+
+async function Search(idparam) {
+    const result = await client.search({
+        index: nom_index,
+        query: {
+            bool: {
+                must: [
+                    {
+                        match: {
+                            id:idparam
+                        }
+                    }
+                ]
+            }
+        }
+    })
+    console.log(result)
+    // Si l'id recherché existe alors le result sera à 1
+    if (result.hits.total.value === 1) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// ***************************************
 
 
 // Ajout d'un site
@@ -83,38 +122,14 @@ app.post('/add', async function (req, res) {
     var Lambert_XValue = req.body.Lambert_X
 
     try {
-        // Recherche si id existe
-        async function Search() {
-            const result = await client.search({
-                index: 'archeo',
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                match: {
-                                    id: "" + IdValue + ""
-                                }
-                            }
-                        ]
-                    }
-                }
-            })
-            console.log(result)
-            // Si l'id recherché existe alors le result sera à 1
-            if (result.hits.total.value === 1) {
-                return true
-            } else {
-                return false
-            }
-        }
 
         // Appel de la fonction Search
-        var Matches = await Search()
+        var Matches = await Search(IdValue)
 
         // Si id existe, Matches égal true
         if (Matches !== true) {
             await client.index({
-                index: 'archeo',
+                index: nom_index,
 
                 body: {
                     Date_fin: Date_finValue,
@@ -131,7 +146,7 @@ app.post('/add', async function (req, res) {
                     Lambert_X: Lambert_XValue
                 }
             })
-            await client.indices.refresh({index: 'archeo'})
+            await client.indices.refresh({index: nom_index})
             res.send('Ajout réussi')
         } else {
             res.send('Le site que vous souhaitez ajouter existe déjà !')
@@ -141,6 +156,9 @@ app.post('/add', async function (req, res) {
     }
 })
 
+
+
+// ***************************************
 
 //Modification d'un site
 app.post('/update/:id', async function (req, res) {
@@ -160,39 +178,15 @@ app.post('/update/:id', async function (req, res) {
     var Lambert_XValue = req.body.Lambert_X
 
     try {
-        // Recherche si id existe
-        async function Search() {
-            const result = await client.search({
-                index: 'archeo',
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                match: {
-                                    id: "" + IdValue + ""
-                                }
-                            }
-                        ]
-                    }
-                }
-            })
-            console.log(result)
-            // Si l'id recherché existe alors le result sera à 1
-            if (result.hits.total.value === 1) {
-                return true
-            } else {
-                return false
-            }
-        }
 
         // Appel de la fonction Search
-        var Matches = await Search()
+        var Matches = await Search(IdValue)
 
         // Si id existe, Matches égal true
         if (Matches === true) {
 
             await client.updateByQuery({
-                index: 'archeo',
+                index: nom_index,
 
                 script: {
                     source: "ctx._source.Date_fin = params.Date_fin; ctx._source.Nom_du_site = params.Nom_du_site; ctx._source.Type_intervention= params.Type_intervention; ctx._source.Themes= params.Themes; ctx._source.Date_debut= params.Date_debut; ctx._source.Periodes= params.Periodes; ctx._source.Departement= params.Departement; ctx._source.Region= params.Region; ctx._source.Commune= params.Commune; ctx._source.Lambert_Y= params.Lambert_Y; ctx._source.Lambert_X= params.Lambert_X;",
@@ -226,7 +220,7 @@ app.post('/update/:id', async function (req, res) {
                 }
             );
 
-            await client.indices.refresh({index: 'archeo'})
+            await client.indices.refresh({index: nom_index})
             res.send('Modification réussie')
         } else {
             res.send('Le site que vous chercher n\'existe pas !')
@@ -243,46 +237,21 @@ app.post('/delete/:id', async function (req, res) {
     var IdValue = req.params.id
 
     try {
-        // Recherche si id existe
-        async function Search() {
-
-            const result = await client.search({
-                index: 'archeo',
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                match: {
-                                    id: "" + IdValue + ""
-                                }
-                            }
-                        ]
-                    }
-                }
-            })
-            console.log(result)
-            // Si l'id recherché existe alors le result sera à 1
-            if (result.hits.total.value === 1) {
-                return true
-            } else {
-                return false
-            }
-        }
 
         // Appel de la fonction Search
-        var Matches = await Search()
+        var Matches = await Search(IdValue)
 
         // Si id existe, Matches égal true
         if (Matches === true) {
             await client.deleteByQuery({
-                index: 'archeo',
+                index: nom_index,
                 body: {
                     query: {
                         match: {id: IdValue}
                     }
                 }
             })
-            await client.indices.refresh({index: 'archeo'})
+            await client.indices.refresh({index: nom_index})
             res.send('Le site a bien été supprimé !')
         } else {
             res.send("Le site que vous chercher n\'existe pas !")
