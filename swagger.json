@@ -1,0 +1,384 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "some-app",
+    "version": "Unknown"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "parameters": [],
+      "get": {
+        "operationId": "anotherRoute",
+        "summary": "Hello world",
+        "description": "Affichage de 'Hello world !'",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Hello world !",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/all": {
+      "parameters": [],
+      "get": {
+        "operationId": "anotherRoute2",
+        "summary": "Tous les sites archéologiques ",
+        "description": "Affichage la liste des sites archéologiques",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Résultat trouvé !",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          }
+        }
+      }
+
+    },
+    "/site/{id}": {
+      "get": {
+        "tags": ["Todo CRUD operations"],
+        "operationId": "routeWithId",
+        "summary": "Affiche un site archeologique",
+        "description": "Affiche un site archeologique à partir de son id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "type": "string",
+            "description": "id du site archéologique recherché",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Il y a un résultat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aucun résultat trouvé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/add": {
+      "post": {
+        "tags": ["Todo CRUD operations"],
+        "description": "Création d'\nun site",
+        "operationId": "createSite",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Le site a été créé avec succes"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+
+  },
+  "components": {
+    "schemas": {
+      "id": {
+        "type": "int",
+        "description": "Identifiant unique d'\nun site archéologique ",
+        "example": "1"
+      },
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "int",
+            "description": "Identifiant unique d'\nun site archéologique ",
+            "example": "1"
+          },
+          "Date_fin": {
+            "type": "string",
+            "description": "Date de fin de recherche sur un site archéologique",
+            "example": "01/04/2002"
+          },
+          "Date_debut": {
+            "type": "string",
+            "description": "Date de début de recherche sur un site archéologique",
+            "example": "01/04/2002"
+          },
+          "Nom_du_site": {
+            "type": "string",
+            "description": "Nom d\n'un site archéologique",
+            "example": "Les Monts Gardés 3"
+          },
+          "Type_intervention": {
+            "type": "string",
+            "description": "Type d\n'intervention sur un site archéologique",
+            "example": "fouille"
+          },
+          "Themes": {
+            "type": "string",
+            "description": "Themes",
+            "example": "#Cultes et pratiques funéraires"
+          },
+          "Periodes": {
+            "type": "string",
+            "description": "Periodes durant lequel un site archeologique est créé hypothétiquement ",
+            "example": "#Protohistoire#Antiquité"
+          },
+          "Departement": {
+            "type": "string",
+            "description": "Departement du lieu où se trouve un site archéologique",
+            "example": "Seine-et-Marne"
+          },
+          "Region": {
+            "type": "string",
+            "description": "Region du lieu où se trouve un site archéologique",
+            "example": "Ile-de-France"
+          },
+          "Commune": {
+            "type": "string",
+            "description": "Commune du site ",
+            "example": "Claye-Souilly"
+          },
+          "Lambert_Y": {
+            "type": "string",
+            "description": "Coordonnée Lambert_Y du site",
+            "example": "6872103"
+          },
+          "Lambert_X": {
+            "type": "string",
+            "description": "Coordonnée Lambert_X du site",
+            "example": "679304"
+          }
+
+        }
+      },
+      "TodoInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "int",
+            "description": "Identifiant unique d'\nun site archéologique ",
+            "example": "1"
+          },
+          "Date_fin": {
+            "type": "string",
+            "description": "Date de fin de recherche sur un site archéologique",
+            "example": "01/04/2002"
+          },
+          "Date_debut": {
+            "type": "string",
+            "description": "Date de début de recherche sur un site archéologique",
+            "example": "01/04/2002"
+          },
+          "Nom_du_site": {
+            "type": "string",
+            "description": "Nom d\n'un site archéologique",
+            "example": "Les Monts Gardés 3"
+          },
+          "Type_intervention": {
+            "type": "string",
+            "description": "Type d\n'intervention sur un site archéologique",
+            "example": "fouille"
+          },
+          "Themes": {
+            "type": "string",
+            "description": "Themes",
+            "example": "#Cultes et pratiques funéraires"
+          },
+          "Periodes": {
+            "type": "string",
+            "description": "Periodes durant lequel un site archeologique est créé hypothétiquement ",
+            "example": "#Protohistoire#Antiquité"
+          },
+          "Departement": {
+            "type": "string",
+            "description": "Departement du lieu où se trouve un site archéologique",
+            "example": "Seine-et-Marne"
+          },
+          "Region": {
+            "type": "string",
+            "description": "Region du lieu où se trouve un site archéologique",
+            "example": "Ile-de-France"
+          },
+          "Commune": {
+            "type": "string",
+            "description": "Commune du site ",
+            "example": "Claye-Souilly"
+          },
+          "Lambert_Y": {
+            "type": "string",
+            "description": "Coordonnée Lambert_Y du site",
+            "example": "6872103"
+          },
+          "Lambert_X": {
+            "type": "string",
+            "description": "Coordonnée Lambert_X du site",
+            "example": "679304"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not found"
+          },
+          "internal_code": {
+            "type": "string",
+            "description": "Error internal code",
+            "example": "Invalid parameters"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": [
+        "Date_fin",
+        "Nom_du_site",
+        "Type_intervention",
+        "Themes",
+        "Date_debut",
+        "Periodes",
+        "Departement",
+        "Region",
+        "id",
+        "Commune",
+        "Lambert_Y",
+        "Lambert_X"
+      ],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "isPublic": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "books": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              }
+            }
+          }
+
+        },
+        "companies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+
+        }
+
+      }
+    },
+    "updateUser": {
+      "required": [
+        "name",
+        "companies"
+      ],
+      "properties": {
+        "isPublic": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "books": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              }
+            }
+          }
+
+        },
+        "companies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+
+        }
+
+      }
+    },
+    "Users": {
+      "type": "array",
+      "$ref": "#/definitions/User"
+    }
+
+  }
+
+}

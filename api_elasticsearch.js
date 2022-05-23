@@ -7,6 +7,11 @@ app.set('port', 4040)
 console.log('Server listening on port', app.get('port'))
 app.listen(app.get('port'))
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 var nom_index = "sites_archeo";
 
 // INFO IMPORTANTE
@@ -29,6 +34,8 @@ app.get('/all', async function (req, res) {
 
         const result = await client.search({
             index: nom_index,
+            //Limit le nombre d'élément dans le resultat
+            size: 15,
             query: {
                 match_all: {}
             }
@@ -41,6 +48,7 @@ app.get('/all', async function (req, res) {
     var SearchResult = await Search()
     // Envoie le résultat de la recherche
     res.send(SearchResult)
+
 })
 
 // ***************************************
