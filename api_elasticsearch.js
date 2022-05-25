@@ -181,7 +181,7 @@ app.post('/update/:id', async function (req, res) {
     var PeriodesValue = req.body.Periodes
     var DepartementValue = req.body.Departement
     var RegionValue = req.body.Region
-    const CommuneValue = req.body.Commune
+    var CommuneValue = req.body.Commune
     var Lambert_YValue = req.body.Lambert_Y
     var Lambert_XValue = req.body.Lambert_X
 
@@ -239,7 +239,7 @@ app.post('/update/:id', async function (req, res) {
 })
 
 
-app.post('/delete/:id', async function (req, res) {
+app.delete('/delete/:id', async function (req, res) {
 
     // Récuprération de l'id
     var IdValue = req.params.id
