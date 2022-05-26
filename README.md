@@ -11,7 +11,7 @@ Swagger est utilisé pour la documentation de cette API.
 
 1. Téléchager le projet
 2. Importation des données.
-- Pour cela, allez sur http://localhost:5601/app/ml/filedatavisualizer (Machine Learning / File Upload) 
+- Pour cela, lancez kibana et allez sur http://localhost:5601/app/ml/filedatavisualizer (Machine Learning / File Upload) 
 - Importer le fichier france2.csv
 - Nommez l'index "sites_archeo"
 
